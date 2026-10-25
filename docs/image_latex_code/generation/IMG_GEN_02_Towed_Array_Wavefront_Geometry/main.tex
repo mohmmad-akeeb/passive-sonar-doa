@@ -1,0 +1,155 @@
+\documentclass[tikz, border=10pt]{standalone}
+\usepackage{tikz}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{xcolor}
+\usetikzlibrary{arrows.meta, decorations.markings, angles, quotes, calc}
+
+\definecolor{waveBlue}{HTML}{1a6eb5}
+\definecolor{sensorBlue}{HTML}{2196f3}
+\definecolor{pathRed}{HTML}{d32f2f}
+\definecolor{annoOrange}{HTML}{e65100}
+
+\begin{document}
+\begin{tikzpicture}[
+    font=\sffamily\small,
+    >=Stealth
+]
+
+% ── Parameters (all in TikZ units = cm) ─────────────────────────────────
+% 8 sensors, spacing d represented as 1.8 units
+\def\d{1.8}       % element spacing in drawing units
+\def\N{8}         % number of elements shown
+\def\theta{35}    % bearing from broadside in degrees → wavefront angle from vertical
+
+% ── Array baseline ───────────────────────────────────────────────────────
+\foreach \i in {0,1,...,7}{
+    \pgfmathsetmacro{\x}{\i * \d}
+    \draw[sensorBlue, fill=sensorBlue!20, thick] (\x, 0) circle (0.2);
+    \node[below=4pt, font=\sffamily\footnotesize] at (\x, 0)
+        {$n{=}\i$};
+}
+% Array axis label
+\node[below=18pt] at (3.5*\d, 0) {ULA axis};
+
+% ── Element spacing annotation ───────────────────────────────────────────
+\draw[<->, thin] (0, -0.7) -- (\d, -0.7)
+    node[midway, below, font=\sffamily\footnotesize]
+    {$d = 0.1875\,\text{m}$};
+
+% ── Incoming wavefront (diagonal line) ──────────────────────────────────
+% Wavefront arrives from upper-left; the wavefront is perpendicular to
+% the direction of propagation. Direction of propagation makes angle
+% (90° - theta) with the array axis.
+% Wavefront line passes through element 0 at y=0.
+% Wavefront direction vector: (sin(theta), -cos(theta)) normalised
+% We draw the wavefront as a line with slope = -cot(theta) shifted right
+
+\pgfmathsetmacro{\waveslope}{cos(\theta)/sin(\theta)}   % slope dy/dx of wavefront
+
+% Pre-compute start/end y-coordinates (TikZ cannot evaluate \macro*expr inline)
+\pgfmathsetmacro{\wfStartY}{\waveslope*(-1.0)}
+\pgfmathsetmacro{\wfEndX}{7*\d + 0.5}
+\pgfmathsetmacro{\wfEndY}{\waveslope*(7*\d + 0.5)}
+
+% Wavefront line through element 0 (x=0, y=0)
+\draw[waveBlue, very thick, ->, shorten >=2pt]
+    (-1.0, \wfStartY)
+    -- (\wfEndX, \wfEndY)
+    node[above right, waveBlue] {Wavefront};
+
+% ── Propagation direction arrow ──────────────────────────────────────────
+\pgfmathsetmacro{\px}{sin(\theta)}
+\pgfmathsetmacro{\py}{-cos(\theta)}
+\draw[waveBlue, ->, thick]
+    (3.0, 4.5)
+    -- ({3.0 + 2*\px}, {4.5 + 2*\py})
+    node[right, waveBlue, font=\sffamily\footnotesize]
+    {Propagation direction};
+
+% ── Bearing angle arc ────────────────────────────────────────────────────
+% θ measured from broadside (vertical)
+\draw[annoOrange, thin]
+    (3.0, 4.5) -- (3.0, 6.5);   % broadside reference (vertical)
+\draw[annoOrange, ->, thin]
+    (3.0, 5.8) arc[start angle=90, end angle={90-\theta}, radius=1.3];
+\node[annoOrange] at (3.6, 5.6) {$\theta$};
+
+% ── Path-length difference construction ─────────────────────────────────
+% For element 1 at x=d, y=0:
+% The extra path length relative to element 0 is d*cos(theta).
+% Draw right-triangle from element 0 to element 1 footprint on wavefront.
+
+\pgfmathsetmacro{\footx}{\d * sin(\theta) * sin(\theta)}
+\pgfmathsetmacro{\footy}{\d * sin(\theta) * (-cos(\theta))}
+% Foot of perpendicular from element 1 onto the wavefront line through elem 0
+% Wavefront unit normal: (sin(theta), -cos(theta))
+% Projection of element-1 position (\d, 0) onto wavefront normal:
+% proj = d * sin(theta)
+% Foot = elem1 - proj * normal = (\d - d*sin^2, d*sin*cos)
+
+\pgfmathsetmacro{\ex}{\d - \d*sin(\theta)*sin(\theta)}
+\pgfmathsetmacro{\ey}{\d * sin(\theta) * cos(\theta)}
+
+% Draw dashed path-length line from elem 1 down to wavefront
+\draw[pathRed, dashed, thick] (\d, 0) -- (\ex, \ey);
+
+% Path-length label
+\pgfmathsetmacro{\midpx}{(\d + \ex)/2 + 0.3}
+\pgfmathsetmacro{\midpy}{(\ey)/2}
+\node[pathRed, right, font=\sffamily\footnotesize] at (\midpx, \midpy)
+    {$d\cos\theta$};
+
+% Right-angle mark at foot
+\pgfmathsetmacro{\marksize}{0.12}
+\draw[pathRed, thin]
+    (\ex, \ey)
+    -- ({\ex + \marksize*cos(\theta)}, {\ey + \marksize*sin(\theta)})
+    -- ({\ex + \marksize*cos(\theta) - \marksize*sin(\theta)},
+        {\ey + \marksize*sin(\theta) + \marksize*cos(\theta)})
+    -- ({\ex - \marksize*sin(\theta)}, {\ey + \marksize*cos(\theta)});
+
+% ── Arrival time timeline (below each element) ──────────────────────────
+\def\timelineY{-1.4}
+\def\timelineLen{0.9}
+
+% Timeline axis
+\draw[black!40, thin, ->]
+    (-0.3, \timelineY) -- ({7*\d + 1.0}, \timelineY)
+    node[right, font=\sffamily\footnotesize] {$t$};
+\node[left, font=\sffamily\footnotesize] at (-0.3, \timelineY) {$\tau$};
+
+% Dots for each sensor arrival time
+% tau_n proportional to n; max tau at n=7 mapped to 0.7 units offset
+\pgfmathsetmacro{\tscale}{0.5}   % scale: 1 unit of n maps to this many x-units
+\foreach \i in {0,1,...,7}{
+    \pgfmathsetmacro{\arrivalx}{\i * \d + \i * \tscale * 0.12}
+    % vertical dashed line from element to timeline
+    \draw[black!25, dashed, thin]
+        ({\i*\d}, -0.3) -- ({\i*\d}, {\timelineY + 0.1});
+    % dot
+    \filldraw[sensorBlue]
+        ({\i*\d + \i*0.08}, \timelineY) circle (0.07);
+}
+\node[font=\sffamily\tiny, text=black!60] at (3.5*\d, \timelineY - 0.4)
+    {Progressive arrival: $\tau_n = n \cdot \dfrac{d\cos\theta}{c}$};
+
+% ── Legend box ──────────────────────────────────────────────────────────
+\draw[black!40, rounded corners=4pt, thin]
+    (10.5, 1.5) rectangle (15.5, 5.5);
+\node[above, font=\sffamily\footnotesize\bfseries] at (13.0, 5.2)
+    {Legend};
+\node[anchor=west, font=\sffamily\footnotesize] at (10.8, 4.6)
+    {$\theta$ — bearing from broadside};
+\node[anchor=west, font=\sffamily\footnotesize] at (10.8, 4.0)
+    {$d = 0.1875\,\text{m}$ — element spacing};
+\node[anchor=west, font=\sffamily\footnotesize] at (10.8, 3.4)
+    {$c = 1500\,\text{m/s}$ — sound speed};
+\node[anchor=west, font=\sffamily\footnotesize] at (10.8, 2.8)
+    {$\tau_n = n \cdot \dfrac{d\cos\theta}{c}$ — delay at sensor $n$};
+\node[anchor=west, font=\sffamily\footnotesize] at (10.8, 2.0)
+    {$\mathbf{Y} = [\mathbf{y}_0\;\mathbf{y}_1\;\cdots\;\mathbf{y}_{N-1}]
+     \in\mathbb{R}^{T\times N}$};
+
+\end{tikzpicture}
+\end{document}

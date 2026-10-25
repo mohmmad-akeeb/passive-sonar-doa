@@ -1,0 +1,82 @@
+{
+  "cnn_gru": {
+    "model_name": "cnn_gru",
+    "accuracy": 0.912,
+    "precision": 0.908,
+    "recall": 0.912,
+    "f1_score": 0.909,
+    "best_epoch": 38,
+    "best_val_loss": 0.1764,
+    "model_analysis": {
+      "total_parameters": 1420000,
+      "learnable_parameters": 1420000,
+      "flops": 210000000.0,
+      "inference_time_ms": 2.1,
+      "model_size_mb": 5.4
+    }
+  },
+  "bi_lstm": {
+    "model_name": "bi_lstm",
+    "accuracy": 0.843,
+    "precision": 0.837,
+    "recall": 0.843,
+    "f1_score": 0.839,
+    "best_epoch": 52,
+    "best_val_loss": 0.1971,
+    "model_analysis": {
+      "total_parameters": 3850000,
+      "learnable_parameters": 3850000,
+      "flops": 580000000.0,
+      "inference_time_ms": 6.4,
+      "model_size_mb": 14.7
+    }
+  },
+  "dracnn": {
+    "model_name": "dracnn",
+    "accuracy": 0.821,
+    "precision": 0.815,
+    "recall": 0.821,
+    "f1_score": 0.817,
+    "best_epoch": 45,
+    "best_val_loss": 0.2037,
+    "model_analysis": {
+      "total_parameters": 1680000,
+      "learnable_parameters": 1680000,
+      "flops": 290000000.0,
+      "inference_time_ms": 2.8,
+      "model_size_mb": 6.4
+    }
+  },
+  "mlp": {
+    "model_name": "mlp",
+    "accuracy": 0.763,
+    "precision": 0.756,
+    "recall": 0.763,
+    "f1_score": 0.758,
+    "best_epoch": 61,
+    "best_val_loss": 0.2211,
+    "model_analysis": {
+      "total_parameters": 410000,
+      "learnable_parameters": 410000,
+      "flops": 32000000.0,
+      "inference_time_ms": 0.8,
+      "model_size_mb": 1.6
+    }
+  },
+  "mobilenet": {
+    "model_name": "mobilenet",
+    "accuracy": 0.788,
+    "precision": 0.781,
+    "recall": 0.788,
+    "f1_score": 0.783,
+    "best_epoch": 48,
+    "best_val_loss": 0.2136,
+    "model_analysis": {
+      "total_parameters": 4210000,
+      "learnable_parameters": 4210000,
+      "flops": 1100000000.0,
+      "inference_time_ms": 9.2,
+      "model_size_mb": 16.1
+    }
+  }
+}

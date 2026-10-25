@@ -1,0 +1,75 @@
+# ── Virtual environments ──────────────────────────────────────────────────────
+p3_10cuda12_1/
+venv/
+.venv/
+env/
+
+# ── Python bytecache ──────────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*.pyo
+
+# ── Pytest / coverage ─────────────────────────────────────────────────────────
+.pytest_cache/
+.coverage
+htmlcov/
+coverage.xml
+
+# ── Build / dist / packaging ──────────────────────────────────────────────────
+dist/
+build/
+*.egg-info/
+
+# ── Generated data (large binary artifacts) ───────────────────────────────────
+data/
+*.mat
+*.h5
+*.hdf5
+*.7z
+
+# .npy — excluded globally, but README images in figures/ and docs/ are NOT .npy
+# so there is no conflict.  Raw dataset .npy files live under data/ which is
+# already excluded above.
+*.npy
+
+# ── Smoke-test output artifacts (script itself is tracked, outputs are not) ───
+sonar_sim/_smoke/noisy.npy
+sonar_sim/_smoke/labels.npy
+sonar_sim/_smoke/generation_metadata.json
+
+# ── Training run outputs ──────────────────────────────────────────────────────
+results/
+*.pth
+*.pt
+*.ckpt
+
+# ── LaTeX compilation artefacts (keep .tex source, ignore compiled output) ────
+docs/image_latex_code/**/*.aux
+docs/image_latex_code/**/*.log
+docs/image_latex_code/**/*.pdf
+docs/image_latex_code/**/texput.log
+
+# ── Figures — track only the images used in the READMEs ──────────────────────
+# Ignore all of figures/ by default, then whitelist the ones the README needs.
+figures/*
+!figures/01_cnn_gru_learning_curves.png
+!figures/03_model_comparison_grouped.png
+!figures/08_complexity_table.png
+!figures/09_cnn_gru_confusion_matrix.png
+!figures/10_cnn_gru_diagonal_accuracy.png
+!figures/11_cnn_gru_per_bearing_accuracy.png
+
+# ── Jupyter ───────────────────────────────────────────────────────────────────
+.ipynb_checkpoints/
+*.ipynb_checkpoints
+
+# ── IDE / editor ─────────────────────────────────────────────────────────────
+.vscode/
+.idea/
+*.swp
+*.swo
+.cursorignore
+
+# ── OS ────────────────────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
