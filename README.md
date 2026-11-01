@@ -300,7 +300,7 @@ cfg = SimulationConfig(seed=42)   # one line seeds everything
 | PyTorch | 2.5.1+cu121 |
 | NumPy | 2.2.6 |
 | SciPy | 1.15.3 |
-| GPU | NVIDIA GTX 1050 Ti · CUDA 12.1 |
+| GPU |  NVIDIA Tesla V100 32GB · CUDA 12.1 |
 
 ---
 
